@@ -1,22 +1,21 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package game;
 
-/**
- *
- * @author Sandesh
- */
+import java.util.*;
+import javax.swing.JFrame;
+
 public class Game {
 
-    /**
-     * @param args the command line arguments
-     */
+
     public static void main(String[] args) {
 
-        System.out.println("Hello World");
+        JFrame game = new JFrame();
+        game.setBounds(10, 10, 700, 600);
+        game.setTitle ("Score: ");
+        game.setResizable(false);
+        game.setVisible(true);
+        game.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
     }
     
 }
