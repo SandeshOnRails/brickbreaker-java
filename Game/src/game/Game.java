@@ -1,20 +1,25 @@
 
 package game;
 
-import java.util.*;
-import javax.swing.JFrame;
+import javax.swing.*;
+import java.io.IOException;
+import java.net.URISyntaxException;
 
-public class Game {
+public class Game extends JFrame {
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException, URISyntaxException {
 
         JFrame game = new JFrame();
-        game.setBounds(10, 10, 700, 600);
+        Game_Play game_play = new Game_Play();
+        game.add(game_play);
+        game.setBounds(10, 10,640, 480);
         game.setTitle ("Score: ");
         game.setResizable(false);
         game.setVisible(true);
         game.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+
 
     }
     
