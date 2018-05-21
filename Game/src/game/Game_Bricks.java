@@ -56,6 +56,7 @@ public class Game_Bricks {
                  }
                  else if (bigLegRectangle(i, j)){
 
+
                  }
                  else if(j== 2){
                      g.drawImage(brick2, j * brickWidth + 20, i * brickHeight + 20, brickWidth, brickHeight, null);

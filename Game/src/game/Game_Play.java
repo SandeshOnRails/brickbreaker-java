@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 
 
-public class Game_Play extends JPanel implements KeyListener, ActionListener {
+public class Game_Play extends JPanel implements KeyListener, ActionListener{
 
     private boolean start = false;
     public int score = 0;
@@ -36,11 +36,15 @@ public class Game_Play extends JPanel implements KeyListener, ActionListener {
     private Image wall;
     private Image win;
     private JFrame frame;
+    private boolean gameOver = false;
+    private boolean livesOver = false;
+    private Thread t;
+    private boolean msg = false;
 
     public Game_Play(JFrame frame) throws URISyntaxException,IOException {
 
         this.frame = frame;
-
+        t = new Thread();
         map = new Game_Bricks(9, 15);
         File file = new File(getClass().getResource("assets/Background1.bmp").toURI());
 
@@ -50,10 +54,10 @@ public class Game_Play extends JPanel implements KeyListener, ActionListener {
 
 
         this.wall = ImageIO.read(new File(getClass().getResource("assets/Wall.gif").toURI()));
-        this.bigLeg = ImageIO.read(new File(getClass().getResource("assets/Bigleg_small.gif").toURI()));
+        this.bigLeg = ImageIO.read(new File(getClass().getResource("assets/Bigleg.png").toURI()));
 
-        this.katch = ImageIO.read(new File(getClass().getResource("assets/Katch.gif").toURI()));
-       this.pop =ImageIO.read(new File(getClass().getResource("assets/Pop.gif").toURI()));
+        this.katch = ImageIO.read(new File(getClass().getResource("assets/Katch.png").toURI()));
+       this.pop =ImageIO.read(new File(getClass().getResource("assets/Pop.png").toURI()));
         addKeyListener(this);
         setFocusable(true);
         setFocusTraversalKeysEnabled(false);
@@ -66,34 +70,67 @@ public class Game_Play extends JPanel implements KeyListener, ActionListener {
 
 
 
+           if(gameOver){
+
+
+
+               g.drawImage(this.win, 0, 0, null);
+               g.drawString("SCORE: " + score, 275, 240);
+               g.drawString("PLEASE PRESS ENTER TO PLAY THE GAME AGAIN", 20, 280);
+               reset();
+
+           }
+       else  if (totalLife == 0){
 
 
 
             g.drawImage(this.backGround, 0, 0, null);
+            g.setColor(Color.red);
+            g.setFont( new Font("serif",Font.BOLD, 25));
+            g.drawString("GAME OVER", 275, 200);
+            g.drawString("SCORE: " + score, 275, 240);
+            g.drawString("PLEASE PRESS ENTER TO PLAY THE GAME AGAIN", 20, 280);
 
-            try {
-                wall(g);
-                this.map.draw(g);
-                g.drawImage(this.katch, playerX, 430, null);
-                g.drawImage(this.pop, ballX, ballY, null);
-                g.drawImage(this.bigLeg, 290, 20, 60, 60, null, null);
+             reset();
 
 
-                g.dispose();
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-            }
-        if (ballY > 580 && start ){
-            totalLife--;
 
-                start = false;
+           }
 
-            ballXdir = 0;
-                ballYdir = 0;
-            this.frame.setTitle("Score: " + score + " ||  " + "Lives: " + totalLife);
+           else {
 
-        }
 
+               g.drawImage(this.backGround, 0, 0, null);
+
+               try {
+                   wall(g);
+                   this.map.draw(g);
+                   g.drawImage(this.katch, playerX, 430, null);
+                   g.drawImage(this.pop, ballX, ballY, null);
+                   g.drawImage(this.bigLeg, 290, 20, 60, 60, null, null);
+
+
+                 //  g.dispose();
+               } catch (Exception e) {
+                   System.out.println(e.getMessage());
+               }
+               if (ballY > 580 && start) {
+
+                   totalLife--;
+              
+                  
+                   start = false;
+
+                   repaint();
+
+
+
+                   ballXdir = 0;
+                   ballYdir = 0;
+                   this.frame.setTitle("Score: " + score + " ||  " + "Lives: " + totalLife);
+
+               }
+           }
 
 
 
@@ -129,6 +166,10 @@ public class Game_Play extends JPanel implements KeyListener, ActionListener {
                        Rectangle lifeRect1 = new Rectangle(180,180, 40, 20);
                        Rectangle lifeRect2 = new Rectangle(340, 100, 40, 20);
                        Rectangle lifeRect3 = new Rectangle(500, 20, 40, 20);
+                       Rectangle bigLegRect = new Rectangle(290, 20, 60, 60);
+                       if(bigLegRect.intersects(ballRect)){
+                           gameOver = true;
+                       }
                        if(rect.intersects(ballRect)){
                            if(lifeRect1.intersects(ballRect) && map.map[8][4]!= 0) {
                                // map.setValue(0, 8, 4);
@@ -145,8 +186,8 @@ public class Game_Play extends JPanel implements KeyListener, ActionListener {
                            }
 
                            if(ballX + 19 <= rect.x || ballX + 1 >= rect.x  + rect.width){
-                                ballXdir = -ballXdir;
-                           }
+                               ballXdir = -ballXdir;
+                          }
                            else{
                                ballYdir = -ballYdir;
                            }
@@ -190,7 +231,7 @@ public class Game_Play extends JPanel implements KeyListener, ActionListener {
 
     public void keyPressed (KeyEvent e){
 
-        if(e.getKeyCode() == KeyEvent.VK_RIGHT && ballY <=580){
+        if(e.getKeyCode() == KeyEvent.VK_RIGHT && ballY <=580 && start){
             if(playerX >= 540){
                 playerX = 540;
             }
@@ -199,7 +240,7 @@ public class Game_Play extends JPanel implements KeyListener, ActionListener {
             }
         }
 
-        if(e.getKeyCode() == KeyEvent.VK_LEFT && ballY <= 580){
+        if(e.getKeyCode() == KeyEvent.VK_LEFT && ballY <= 580 && start){
             if(playerX <= 20){
                 playerX = 20;
             }
@@ -208,6 +249,7 @@ public class Game_Play extends JPanel implements KeyListener, ActionListener {
             }
         }
         if(e.getKeyCode() == KeyEvent.VK_ENTER){
+               msg = false;
             if(!start && totalLife > 0){
                 start = true;
                 ballX= 320;
@@ -215,6 +257,17 @@ public class Game_Play extends JPanel implements KeyListener, ActionListener {
                 ballXdir = -1;
                 ballYdir = -2;
                 playerX = 300;
+                if(livesOver){
+                    try {
+                        map = new Game_Bricks(9, 15);
+                        livesOver = false;
+                        repaint();
+                    }
+                    catch(Exception ex){
+                        ex.printStackTrace();
+                    }
+
+                }
 
 
 
@@ -257,6 +310,7 @@ public class Game_Play extends JPanel implements KeyListener, ActionListener {
           g.drawImage(this.wall, x, 0, null);
           x = x + width;
       }
+
       y =0;
 
    while(y < 640){
@@ -277,6 +331,19 @@ public class Game_Play extends JPanel implements KeyListener, ActionListener {
 
         return false;
     }
+
+public void reset(){
+    ballX= 320;
+    ballY = 390;
+    ballXdir = -1;
+    ballYdir = -2;
+    playerX = 300;
+    totalLife = 3;
+    score = 0;
+    livesOver = true;
+
+}
+
 
 }
 
