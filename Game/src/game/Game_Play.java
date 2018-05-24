@@ -76,7 +76,7 @@ public class Game_Play extends JPanel implements KeyListener, ActionListener{
 
                g.drawImage(this.win, 0, 0, null);
                g.drawString("SCORE: " + score, 275, 240);
-               g.drawString("PHIR SE KHELNE KE LIYE APNA LUND DABAIYE", 20, 280);
+               g.drawString("Press Enter to Play Again", 20, 280);
                reset();
 
            }
@@ -89,7 +89,7 @@ public class Game_Play extends JPanel implements KeyListener, ActionListener{
             g.setFont( new Font("serif",Font.BOLD, 25));
             g.drawString("GAME OVER", 275, 200);
             g.drawString("SCORE: " + score, 275, 240);
-            g.drawString("PHIR SE KHELNE KE LIYE APNA LUND DABAIYE", 20, 280);
+            g.drawString("Press Enter to Play Again", 275, 280);
 
              reset();
 
@@ -117,13 +117,10 @@ public class Game_Play extends JPanel implements KeyListener, ActionListener{
                if (ballY > 580 && start) {
 
                    totalLife--;
-                   g.setColor(Color.red);
-                   g.setFont( new Font("serif",Font.BOLD, 20));
-                   g.drawString("BC TUH BEKAR HAI SALA. PHIR SE TRY KAR", 80, 280);
-                   g.drawString("ENTER DABA BHADWA. KYA DEKH RAHA HAI", 70, 300);
+                   
                    start = false;
 
-                   //repaint();
+                   repaint();
 
 
 
